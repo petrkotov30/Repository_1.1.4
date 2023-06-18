@@ -26,8 +26,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
         String dropTable = "DROP TABLE IF EXISTS User";
-        try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate(dropTable);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(dropTable)) {
+            preparedStatement.executeUpdate(dropTable);
             System.out.println("Успешно удалили таблицу");
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -60,8 +60,8 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> listUser = new ArrayList<>();
         String getAll = "SELECT id ,name, lastName, age FROM User";
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(getAll)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(getAll);
+             ResultSet resultSet = preparedStatement.executeQuery(getAll)) {
             while (resultSet.next()) {
                 User user = new User();
                 user.setId(resultSet.getLong("ID"));
@@ -78,8 +78,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() {
         String clearTable = "DELETE FROM User";
-        try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate(clearTable);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(clearTable)) {
+            preparedStatement.executeUpdate(clearTable);
             System.out.println("Успешно очистили таблицу");
         } catch (SQLException e) {
             e.printStackTrace();
