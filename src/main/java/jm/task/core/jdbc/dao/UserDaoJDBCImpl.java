@@ -33,7 +33,7 @@ public class UserDaoJDBCImpl implements UserDao {
         sql = "DROP TABLE IF EXISTS User";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.execute(sql);
+            preparedStatement.executeUpdate(sql);
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
