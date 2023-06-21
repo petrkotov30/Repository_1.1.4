@@ -20,21 +20,21 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void createUsersTable() throws SQLException {
         sql = "CREATE TABLE IF NOT EXISTS user (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(20), lastName VARCHAR(20), age TINYINT)";
-        PreparedStatement preparedStatement = this.connection.prepareStatement(this.sql);
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.executeUpdate();
         System.out.println("Таблица создана");
     }
 
     public void dropUsersTable() throws SQLException {
         sql = "DROP TABLE IF EXISTS User";
-        PreparedStatement preparedStatement = this.connection.prepareStatement(this.sql);
-        preparedStatement.executeUpdate(this.sql);
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.executeUpdate(sql);
         System.out.println("Успешно удалили таблицу");
     }
 
     public void saveUser(String name, String lastName, byte age) throws SQLException {
         sql = "INSERT INTO User(name, lastName, age) VALUES(?,?,?)";
-        PreparedStatement preparedStatement = this.connection.prepareStatement(this.sql);
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, name);
         preparedStatement.setString(2, lastName);
         preparedStatement.setByte(3, age);
@@ -44,7 +44,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void removeUserById(long id) throws SQLException {
         sql = "DELETE FROM User WHERE id=?";
-        PreparedStatement preparedStatement = this.connection.prepareStatement(this.sql);
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setLong(1, id);
         preparedStatement.executeUpdate();
     }
@@ -52,8 +52,8 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() throws SQLException {
         List<User> listUser = new ArrayList<>();
         sql = "SELECT id ,name, lastName, age FROM User";
-        PreparedStatement preparedStatement = this.connection.prepareStatement(this.sql);
-        ResultSet resultSet = preparedStatement.executeQuery(this.sql);
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery(sql);
         while(resultSet.next()) {
             User user = new User();
             user.setId(resultSet.getLong("ID"));
@@ -68,8 +68,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() throws SQLException {
         sql = "DELETE FROM User";
-        PreparedStatement preparedStatement = this.connection.prepareStatement(this.sql);
-        preparedStatement.executeUpdate(this.sql);
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.executeUpdate(sql);
         System.out.println("Успешно очистили таблицу");
     }
 }

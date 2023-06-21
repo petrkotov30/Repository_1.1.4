@@ -1,22 +1,19 @@
 package jm.task.core.jdbc;
 
 import jm.task.core.jdbc.dao.UserDao;
+import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
 import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
 import jm.task.core.jdbc.service.UserService;
 import jm.task.core.jdbc.service.UserServiceImpl;
+import jm.task.core.jdbc.util.Util;
 
 import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        UserService userDao = new UserServiceImpl();
-        userDao.createUsersTable();
-        userDao.saveUser("Dima","Domestos",(byte) 33);
-        userDao.saveUser("Petr","Kotov",(byte) 27);
-        userDao.saveUser("Laura","Kotova", (byte) 25);
-        userDao.saveUser("Kolya","Dmitriev",(byte) 24);
-        userDao.getAllUsers().forEach(System.out::println);
-        userDao.cleanUsersTable();
-        userDao.dropUsersTable();
+        UserService userService = new UserServiceImpl();
+        userService.createUsersTable();
+        userService.saveUser("Petr","Kotov",(byte) 27);
+        userService.getAllUsers().forEach(System.out::println);
     }
 }
