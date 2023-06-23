@@ -2,7 +2,6 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -30,7 +29,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.createNativeQuery(sqlCommand, User.class).executeUpdate();
             transaction.commit();
             System.out.println("Create Table");
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -43,7 +42,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.createNativeQuery(sqlCommand, User.class).executeUpdate();
             transaction.commit();
             System.out.println("Delete table");
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
         }
@@ -56,7 +55,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.persist(new User(name, lastName, age));
             transaction.commit();
             System.out.println("SaveUser");
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
         }
@@ -70,7 +69,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.remove(user);
             transaction.commit();
             System.out.println("success remove");
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
         }
@@ -82,7 +81,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = factory.openSession()) {
             list = session.createQuery("from User", User.class).list();
             System.out.println("return list");
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
@@ -95,7 +94,7 @@ public class UserDaoHibernateImpl implements UserDao {
             session.createNativeQuery("delete from User", User.class).executeUpdate();
             transaction.commit();
             System.out.println("clear table");
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
         }
