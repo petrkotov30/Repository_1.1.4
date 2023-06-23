@@ -100,11 +100,6 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.executeUpdate(sql);
             connection.commit();
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
             e.printStackTrace();
         }
         System.out.println("Успешно очистили таблицу");
