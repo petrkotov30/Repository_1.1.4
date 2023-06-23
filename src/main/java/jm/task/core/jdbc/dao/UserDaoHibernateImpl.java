@@ -2,6 +2,7 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -11,6 +12,8 @@ import java.util.List;
 public class UserDaoHibernateImpl implements UserDao {
     private SessionFactory factory = Util.getSessionFactory();
     private static String sqlCommand;
+    private Transaction transaction;
+
     public UserDaoHibernateImpl() {
 
     }
@@ -19,7 +22,7 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void createUsersTable() {
         try (Session session = factory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             sqlCommand = "CREATE TABLE IF NOT EXISTS user " +
                     "(id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
                     "name VARCHAR(50) NOT NULL, lastName VARCHAR(50) NOT NULL, " +
@@ -27,51 +30,60 @@ public class UserDaoHibernateImpl implements UserDao {
             session.createNativeQuery(sqlCommand, User.class).executeUpdate();
             transaction.commit();
             System.out.println("Create Table");
+        } catch (HibernateException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void dropUsersTable() {
         try (Session session = factory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             sqlCommand = "DROP TABLE IF EXISTS User";
             session.createNativeQuery(sqlCommand, User.class).executeUpdate();
             transaction.commit();
             System.out.println("Delete table");
+        } catch (HibernateException e) {
+            transaction.rollback();
+            e.printStackTrace();
         }
     }
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
         try (Session session = factory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             session.persist(new User(name, lastName, age));
             transaction.commit();
             System.out.println("SaveUser");
+        } catch (HibernateException e) {
+            transaction.rollback();
+            e.printStackTrace();
         }
     }
 
     @Override
     public void removeUserById(long id) {
         try (Session session = factory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             User user = session.get(User.class, id);
             session.remove(user);
             transaction.commit();
             System.out.println("success remove");
+        } catch (HibernateException e) {
+            transaction.rollback();
+            e.printStackTrace();
         }
-
     }
 
     @Override
     public List<User> getAllUsers() {
-        List<User> list;
+        List<User> list = null;
         try (Session session = factory.openSession()) {
-            Transaction transaction = session.beginTransaction();
-            sqlCommand = "SELECT id ,name, lastName, age FROM User";
-            list = session.createNativeQuery(sqlCommand, User.class).list();
-            transaction.commit();
+            list = session.createQuery("from User", User.class).list();
             System.out.println("return list");
+        } catch (HibernateException e) {
+            e.printStackTrace();
         }
         return list;
     }
@@ -79,11 +91,13 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public void cleanUsersTable() {
         try (Session session = factory.openSession()) {
-            Transaction transaction = session.beginTransaction();
-            sqlCommand = "DELETE FROM User";
-            session.createNativeQuery(sqlCommand, User.class).executeUpdate();
+            transaction = session.beginTransaction();
+            session.createNativeQuery("delete from User", User.class).executeUpdate();
             transaction.commit();
             System.out.println("clear table");
+        } catch (HibernateException e) {
+            transaction.rollback();
+            e.printStackTrace();
         }
     }
 }
