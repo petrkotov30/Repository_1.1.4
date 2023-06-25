@@ -10,16 +10,29 @@ public class Util {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/MydbTest";
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "rootroot";
+    private static Connection connection;
+
     public static Connection getConnection() {
-        Connection connection;
         try {
             Class.forName(DB_DRIVER);
-            connection = DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
-            System.out.println("Соединение выполнено");
+            connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+            System.out.println("Connection is ON.");
+            connection.setAutoCommit(false);
         } catch (ClassNotFoundException | SQLException e) {
-            System.out.println("Соединение не выполнилось");
-            throw new RuntimeException(e);
+            System.out.println("Connection is OFF.");
+            e.printStackTrace();
         }
         return connection;
+    }
+
+    public static void disconnection() {
+        try {
+            if (connection != null) {
+                connection.close();
+                System.out.println("Connection is OFF.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
